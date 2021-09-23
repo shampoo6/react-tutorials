@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+
+    // 文档：https://zh-hans.reactjs.org/docs/context.html
+
+    // context 上下文的作用，是让多个组件或多级的子组件能够同时访问相同的数据
+    // 注意 数据是只读的
+    // 应用场景：在一个典型的 React 应用中，数据是通过 props 属性自上而下（由父及子）进行传递的
+    // 但此种用法对于某些类型的属性而言是极其繁琐的
+    // （例如：地区偏好，UI 主题，因为他们是全局属性，每个和ui相关组件都应该读取其值）
+    // 所以：很多不同层级的组件需要访问同样一些的数据，可以考虑使用 context
+
+
+    // 创建 context
+    // 语法：const MyContext = React.createContext(defaultValue);
+    // defaultValue 若组件找不到对应 context 时会获取默认值
+    // context 的值可以是一个对象
+    const StringContext = React.createContext('this is defaultValue')
+
+    class App extends React.Component {
+        render() {
+            return (
+                <div>
+                    hello world
+                </div>
+            )
+        }
+    }
+
+    class Component1 extends React.Component {
+
+        componentDidMount() {
+            console.log(this.context)
+        }
+
+        render() {
+            return <div>Component1</div>
+        }
+    }
+
+    // 注册 context 这样的话在组件挂载后就可以通过 this.context 访问
+    Component1.contextType = StringContext
+
+
+    // 函数组件获取 context 需要使用 ReactContext.Consumer
+    function FnComponent(props) {
+        return (
+            <div>
+                <p>这是函数组件</p>
+                <div>{props.value}</div>
+            </div>
+        )
+    }
+
+
+    ReactDOM.render(
+        (
+            <div>
+                {/* 此处的组件不再context中 所以获取this.context时，将获取到defaultValue */}
+                <Component1/>
+                <StringContext.Provider value={'ok'}>
+                    <Component1/>
+                    <StringContext.Consumer>
+                        {/*
+                            在StringContext.Consumer内部可以创建一个接收value参数的函数
+                            该函数参数value就是Provider中设置的value值
+                            可以利用这个方法给函数组件设置context
+                        */}
+                        {value => <FnComponent value={value}/>}
+                    </StringContext.Consumer>
+                </StringContext.Provider>
+            </div>
+        ),
+        document.querySelector('#app')
+    )
+
+
+    // 还有两个可能用到的功能 动态改变 Context.Provider 的值 和 绑定多个 Context
+    // 动态改变 Context.Provider 的值，官网：https://zh-hans.reactjs.org/docs/context.html#updating-context-from-a-nested-component
+    // 重点在于 Provider 绑定的值不能是普通对象，而应该是 react 组件的 state 这样的话当 state 发生变化，react 才会更新页面
+    // 绑定多个 Context，官网：https://zh-hans.reactjs.org/docs/context.html#consuming-multiple-contexts
+    // 重点在于利用多重嵌套的 Context.Consumer，来实现绑定多个 Context
+</script>
+</html>

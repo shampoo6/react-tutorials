@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+
+<script type="text/babel">
+    // react 的错误边界类似 js 的 catch
+    // 错误边界是一个 react 组件，其内部的子组件一旦发生异常就会触发错误边界
+    // 错误边界仅使用 class 组件创建
+
+    class ErrorBoundary extends React.Component {
+        constructor(props) {
+            super(props)
+            this.state = {
+                hasError: false
+            }
+        }
+
+        static getDerivedStateFromError(error) {
+            console.warn('getDerivedStateFromError')
+            // 此处 更新 state 使下一次渲染能够显示降级后的 UI
+            return {hasError: true}
+        }
+
+        componentDidCatch(error, errorInfo) {
+            // 你同样可以将错误日志上报给服务器
+            // 在此处处理异常
+            console.warn('componentDidCatch')
+            console.log(error)
+            console.log(errorInfo)
+        }
+
+        render() {
+            return this.state.hasError ?
+                <div>Children has Error</div> :
+                this.props.children
+        }
+    }
+
+    function Child() {
+        // 子组件中抛出任意未处理的异常 会被错误边界捕获
+        throw new Error('something wrong with child')
+
+        return (
+            <div>child</div>
+        )
+    }
+
+    ReactDOM.render(
+        // 使用错误边界包裹子组件
+        (
+            <ErrorBoundary>
+                <Child/>
+            </ErrorBoundary>
+        )
+        ,
+        document.querySelector('#app')
+    )
+</script>
+</html>

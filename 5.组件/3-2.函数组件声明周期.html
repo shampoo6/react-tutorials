@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- react 需要引入 react 核心库 和 react-dom 库 -->
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+
+    <!-- 为了更方便书写 react 通常会使用 jsx 语法，为了支持该语法 需要引入 babel -->
+    <script src="../js/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script type="text/babel">
+    // 文档：https://zh-hans.reactjs.org/docs/hooks-effect.html
+    // 参考：https://tsh.io/blog/react-component-lifecycle-methods-vs-hooks/
+
+    let timer
+    function Clock() {
+        const [date, setDate] = React.useState(new Date())
+
+        // 第一个参数：钩子函数，将在不同时机被触发，具体什么时候触发，要看第二个参数传入的什么
+        // 第二个参数：
+        // 若传入空数组，那么够子函数就相当于 componentDidMount
+        // 够子函数的返回值就相当于 componentWillUnmount
+        React.useEffect(
+            () => {
+                console.log('componentDidMount')
+                timer = setInterval(() => {
+                    setDate(new Date())
+                }, 1000)
+
+                return () => {
+                    console.log('componentWillUnmount')
+                    clearInterval(timer)
+                };
+            },
+            []
+        );
+
+
+
+        // 第二个参数：
+        // 若不传参数，或传入一个可变依赖，那么当参数发生变化时，就会触发第一个参数中的回调
+        // 第一个参数中回调函数的返回值 将在下次调用前被调用
+
+        // timer = setInterval(() => {
+        //     setDate(new Date())
+        // }, 1000)
+
+        React.useEffect(
+            () => {
+                console.log('componentDidUpdate')
+                // timer = setInterval(() => {
+                //     setDate(new Date())
+                // }, 1000)
+
+                return () => {
+                    console.log('before next update')
+                };
+            }
+        );
+
+        return (
+            <div>
+                {date.toLocaleString()}
+            </div>
+        )
+    }
+
+    // 声明渲染函数
+    ReactDOM.render(
+        (
+            <div>
+                <Clock />
+            </div>
+        ),
+        document.querySelector('#root')
+    )
+</script>
+
+</html>

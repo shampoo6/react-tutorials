@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- react 需要引入 react 核心库 和 react-dom 库 -->
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+
+    <!-- 为了更方便书写 react 通常会使用 jsx 语法，为了支持该语法 需要引入 babel -->
+    <script src="../js/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script type="text/babel">
+    // 组件分为函数组件和class组件，对于react来说两者是等价的
+
+    // class 组件声明
+    class Welcome extends React.Component {
+        // 也可以有组件的属性和行为
+        sex = '男'
+
+        // 构造函数接收一个props props是组件接收的html属性
+        // props.children 是当前元素的标签体中的子元素集合
+        constructor(props) {
+            super(props);
+        }
+
+        getAge() {
+            return 16
+        }
+
+        render() {
+            // this.props 指的是组件上的html属性
+            return <h1>Hello, {this.props.name}, {this.sex}, {this.getAge()}</h1>;
+        }
+    }
+
+    // 在使用组件时 组件被当作html标签使用
+    console.log(<Welcome name="张三" />);
+
+
+
+
+    // 创建函数组件
+    // 参数 props 是标签上的html属性集合
+    function FnWelcome(props) {
+        console.log(props)
+
+        // 组件不是类型，所以这里不能用this.sex设置属性
+        // 组件内的this为undefined
+        let sex = '女'
+
+        let getAge = function () {
+            return 16
+        }
+
+        // 函数返回 jsx 语法的内容
+        return (
+            <h1>
+                Hello, <br />
+                {props.name}, <br />
+                {sex}, <br />
+                {getAge()}
+            </h1>
+        )
+    }
+
+
+    // 组件中的props是只读属性
+    // 所以给props中的属性赋值，并不会修改原始数据
+    // 例如组件中修改姓名属性，不会修改原始属性 name1 name2 的值
+    // 所以传入组件的数据是单向的，能传入组件，但值不能传出组件
+    let name1 = '张三'
+    let name2 = '李四'
+
+
+    // 组件可以组合，也就是组件可以有子组件
+    // 组件的渲染函数返回null则什么都不渲染
+
+    ReactDOM.render(
+        (
+            <div>
+                <Welcome name={name1} />
+                <FnWelcome name={name2} />
+            </div>
+        ),
+        document.querySelector('#root')
+    )
+</script>
+
+</html>

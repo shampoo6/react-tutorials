@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+
+    <style>
+        .item {
+            height: 100px;
+            border-bottom: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+<div id="root"></div>
+</body>
+
+<script type="text/babel">
+    // 文档：https://zh-hans.reactjs.org/docs/lifting-state-up.html
+
+    // 什么是状态提升？
+    // 组件可以利用自身的 props 属性将自身状态提升到上级组件
+    // 状态提升的过程类似于汇报自己的状态，表现形式类似于触发事件
+    // 上级组件只要绑定事件（本质是提供一个回调函数）接收参数即可
+
+    // 子组件
+    class Child extends React.Component {
+        constructor(props) {
+            super(props)
+            this.state = {
+                value: ''
+            }
+
+            this.onInputChange = this.onInputChange.bind(this)
+            this.onSend = this.onSend.bind(this)
+        }
+
+        render() {
+            return (
+                <div>
+                    <input value={this.state.value} onChange={this.onInputChange}/>
+                    <button onClick={this.onSend}>发送给父元素</button>
+                </div>
+            )
+        }
+
+        onInputChange(ev) {
+            this.setState({value: ev.target.value})
+        }
+
+        onSend() {
+            console.log('send')
+            // 子组件将需要提升状态的内容通过props发送给父元素
+            // 本质上就是调用父元素提供的回调函数
+            this.props.onChange(this.state)
+        }
+    }
+
+    // 父组件
+    class Parent extends React.Component {
+        constructor(props) {
+            super(props)
+        }
+
+        render() {
+            return (
+                <div>
+                    {/* 给子组件的onChange属性提供回调函数 */}
+                    <Child onChange={this.onChildChange.bind(this)}/>
+                </div>
+            )
+        }
+
+        onChildChange(params) {
+            console.log('receive child params')
+            console.log(params)
+        }
+    }
+
+    // 声明渲染函数
+    ReactDOM.render(
+        <Parent/>,
+        document.querySelector('#root')
+    )
+</script>
+
+</html>

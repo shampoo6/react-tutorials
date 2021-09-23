@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+    // 文档：https://zh-hans.reactjs.org/docs/forwarding-refs.html
+    // https://zh-hans.reactjs.org/docs/refs-and-the-dom.html
+
+    // 什么是转发？
+    // ref 的作用是获取组件中的 dom 或 react-dom
+    // 应用场景：当开发时需要动态读取元素属性或设置元素属性或调用元素的函数时，需要使用 ref
+    // 注意：不能再函数组件上使用 ref
+
+    class App extends React.Component {
+        constructor(props) {
+            super(props)
+            // 创建 ref 对象
+            this.btn2 = React.createRef()
+            this.msg = React.createRef()
+            this.state = {
+                msg: '',
+                refCallback: (el) => {
+                    this.callbackInput = el
+                    return el
+                }
+            }
+        }
+
+        render() {
+            return (
+                <div>
+                    <button onClick={this.onBtn1Click.bind(this)}>btn 1</button>
+                    {/* 使用ref属性绑定对应的ref对象 */}
+                    <button ref={this.btn2} onClick={this.onBtn2Click.bind(this)}>btn 2</button>
+                    <Message ref={this.msg}/>
+                    <input value={this.state.msg} onChange={this.onMsgChange.bind(this)}/>
+                    <button onClick={this.changeMsg.bind(this)}>修改msg</button>
+                    <FnComponent/>
+                    <RefCallbackComponent refCallback={this.state.refCallback}/>
+                    <button onClick={this.getChildInput.bind(this)}>读取子组件input</button>
+                </div>
+            )
+        }
+
+        onBtn1Click() {
+            console.log(this.btn2)
+            // 通过 ref 对象的 current 访问元素
+            this.btn2.current.click()
+        }
+
+        onBtn2Click() {
+            console.log('btn2 clicked')
+        }
+
+        onMsgChange(ev) {
+            this.setState({msg: ev.target.value})
+        }
+
+        changeMsg() {
+            // console.log(this.msg)
+            // console.log(this.msg.current.setMsg)
+
+            // 通过 ref 对象的 current 也能访问自定义组件
+            this.msg.current.setMsg(this.state.msg)
+        }
+
+        getChildInput() {
+            console.log(this.callbackInput)
+        }
+    }
+
+    class Message extends React.Component {
+        constructor(props) {
+            super(props)
+            this.state = {
+                msg: 'hello world'
+            }
+        }
+
+        render() {
+            return (
+                <div>
+                    {this.state.msg}
+                </div>
+            )
+        }
+
+        setMsg(msg) {
+            this.setState({msg})
+        }
+    }
+
+
+    // 函数组件的 ref 使用
+    function FnComponent() {
+        // 函数组件通过 useRef 函数获取一个 ref 对象
+        // 其余用法和 class 组件相同
+        const inputRef = React.useRef(null)
+
+        return (
+            <div>
+                <input ref={inputRef}/>
+                <button onClick={onFocus}>input获取焦点</button>
+            </div>
+        )
+
+        function onFocus() {
+            console.log(inputRef)
+            inputRef.current.focus()
+        }
+    }
+
+    // ref callback
+    // 在创建 ref 对象时 不一定要用 createRef 或 useRef
+    // ref 也接收一个回调函数 以下组件为例
+    function RefCallbackComponent(props) {
+        let inputRef
+
+        // 该函数就是ref回调函数
+        // 接收一个参数 el 代表 ref 所引用的 dom 或 react-dom 对象
+        // 函数返回一个 dom 或 react-dom 对象，用于给 react 提供 ref 对象
+        function setInputRef(el) {
+            inputRef = el
+            return inputRef
+        }
+
+        return (
+            <div>
+                {/*<input ref={setInputRef}/>*/}
+                {/* 可以使用匿名函数简写如下 */}
+                {/*<input ref={el => inputRef = el}/>*/}
+                {/* 甚至可以来自于父组件传入的props，这样的话父组件中将能获取该 input 元素 */}
+                <input ref={props.refCallback}/>
+                <button onClick={onFocus}>input获取焦点(ref callback)</button>
+            </div>
+        )
+
+        function onFocus() {
+            console.log(inputRef)
+            inputRef.focus()
+        }
+    }
+
+    ReactDOM.render(
+        <App/>,
+        document.querySelector('#app')
+    )
+</script>
+</html>

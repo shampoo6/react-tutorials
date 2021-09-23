@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+
+    <style>
+        .item {
+            height: 100px;
+            border-bottom: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+<div id="root"></div>
+</body>
+
+<script type="text/babel">
+    // 什么是受控组件？
+    // 被 react 的 state 控制显示和输入的表单元素称为受控组件
+    // 受控组件的数据来自 state 而不是表单元素自身
+
+    class StudentForm extends React.Component {
+        constructor() {
+            super()
+            this.state = {
+                name: '',
+                clazz: '',
+                desc: '',
+                sex: 'other',
+                hobbies: ['shu', 'hua']
+            }
+        }
+
+        render() {
+            return (
+                // <form onSubmit="return false">
+                <form>
+                    {/* react 中 所有的事件都不能通过 return false 来屏蔽默认事件 */}
+                    <div>
+                        {/* input[type=text] 、select 和 textarea 用法相同，如下，绑定value值和onChange事件 */}
+                        <label>姓名：<input value={this.state.name} onChange={(ev) => {
+                            this.onNameChange(ev)
+                        }}/></label><span>结果：{this.state.name}</span>
+                    </div>
+                    <div>
+                        <label>班级：
+                            <select value={this.state.clazz} onChange={ev => {
+                                this.onClazzChange(ev)
+                            }}>
+                                <option value="" disabled>未选择</option>
+                                <option value="1">1班</option>
+                                <option value="2">2班</option>
+                                <option value="3">3班</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            简介：
+                            <textarea value={this.state.desc} onChange={ev => {
+                                this.onDescChange(ev)
+                            }}/>
+                        </label>
+                    </div>
+                    <div>
+                        性别：
+                        <label><input checked={this.state.sex === 'male'} type="radio" name="sex" value="male"
+                                      onChange={(ev) => {
+                                          this.onSexChange(ev)
+                                      }}/>男</label>
+                        <label><input checked={this.state.sex === 'female'} type="radio" name="sex" value="female"
+                                      onChange={(ev) => {
+                                          this.onSexChange(ev)
+                                      }}/>女</label>
+                        <label><input checked={this.state.sex === 'other'} type="radio" name="sex" value="other"
+                                      onChange={(ev) => {
+                                          this.onSexChange(ev)
+                                      }}/>其他</label>
+                    </div>
+                    <div>
+                        爱好：
+                        <label><input name="hobbies" type="checkbox" value="qin"
+                                      checked={this.state.hobbies.includes('qin')}
+                                      onChange={ev => {
+                                          this.onHobbiesChange(ev)
+                                      }}
+                        />琴</label>
+                        <label><input name="hobbies" type="checkbox" value="qi"
+                                      checked={this.state.hobbies.includes('qi')}
+                                      onChange={ev => {
+                                          this.onHobbiesChange(ev)
+                                      }}
+                        />棋</label>
+                        <label><input name="hobbies" type="checkbox" value="shu"
+                                      checked={this.state.hobbies.includes('shu')}
+                                      onChange={ev => {
+                                          this.onHobbiesChange(ev)
+                                      }}
+                        />书</label>
+                        <label><input name="hobbies" type="checkbox" value="hua"
+                                      checked={this.state.hobbies.includes('hua')}
+                                      onChange={ev => {
+                                          this.onHobbiesChange(ev)
+                                      }}
+                        />画</label>
+                    </div>
+                    <div>
+                        <button onClick={(ev) => {
+                            this.submit(ev)
+                        }}>提交
+                        </button>
+                    </div>
+                </form>
+            )
+        }
+
+        submit(ev) {
+            ev.preventDefault()
+            console.log(this.state)
+        }
+
+        onNameChange(ev) {
+            console.log(ev.target.value)
+            this.setState({name: ev.target.value})
+        }
+
+        onClazzChange(ev) {
+            console.log(ev)
+            this.setState({clazz: ev.target.value})
+        }
+
+        onDescChange(ev) {
+            console.log(ev)
+            this.setState({desc: ev.target.value})
+        }
+
+        onSexChange(ev) {
+            console.log(ev)
+            this.setState({sex: ev.target.value})
+        }
+
+        onHobbiesChange(ev) {
+            console.log(ev)
+            const value = ev.target.value
+            if (this.state.hobbies.includes(ev.target.value)) {
+                this.setState({hobbies: this.state.hobbies.filter(el => el !== value)})
+            } else {
+                this.setState((state) => ({hobbies: [...state.hobbies, value]}))
+            }
+        }
+    }
+
+    // 声明渲染函数
+    ReactDOM.render(
+        <StudentForm/>,
+        document.querySelector('#root')
+    )
+</script>
+
+</html>

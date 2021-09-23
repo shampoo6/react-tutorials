@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- react 需要引入 react 核心库 和 react-dom 库 -->
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+
+    <!-- 为了更方便书写 react 通常会使用 jsx 语法，为了支持该语法 需要引入 babel -->
+    <script src="../js/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script type="text/babel">
+    // 文档：https://zh-hans.reactjs.org/docs/hooks-state.html
+
+    function Clock() {
+        // 函数组件只能给每个状态量声明单独的一组访问器
+        // 调用 React.useState 创建一对访问器
+        // 该函数返回一个数组，参数是状态属性的初始值
+        // 第一个数组成员是读取器 getter 用来读值
+        // 第二个数组成员是符值器 setter 用来赋值
+        const [date, setDate] = React.useState(new Date())
+
+        setInterval(() => {
+            setDate(new Date())
+        }, 1000)
+
+        return (
+            <div>
+                {date.toLocaleString()}
+            </div>
+        )
+    }
+
+    // 声明渲染函数
+    ReactDOM.render(
+        (
+            <div>
+                <Clock />
+            </div>
+        ),
+        document.querySelector('#root')
+    )
+</script>
+
+</html>

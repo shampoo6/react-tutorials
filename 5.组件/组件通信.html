@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="../js/babel.min.js"></script>
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+
+    class App extends React.Component {
+        constructor(props) {
+            super(props)
+            this.state = {
+                title: '标题1',
+                count: 0
+            }
+        }
+
+        render() {
+            return (
+                <React.Fragment>
+                    {/* 父元素通过属性绑定给子元素传递参数，并可动态修改其值 */}
+                    <Child title={this.state.title} onCountChange={this.onCountChangeHandler.bind(this)}/>
+                    <input value={this.state.title} onChange={this.onTitleChange.bind(this)}/>
+                    <br/>
+                    <div>收到子组件的count: {this.state.count}</div>
+                </React.Fragment>
+            )
+        }
+
+        onTitleChange(ev) {
+            console.log(ev)
+            this.setState({title: ev.target.value})
+        }
+
+        onCountChangeHandler(count) {
+            this.setState({count})
+        }
+    }
+
+    class Child extends React.Component {
+        constructor(props) {
+            super(props)
+            this.state = {
+                title: '',
+                count: 0
+            }
+        }
+
+        componentDidMount() {
+            setInterval(() => {
+                this.setState((state, props) => {
+                    props.onCountChange(state.count + 1)
+
+                    return {count: state.count + 1, title: props.title + '; count - ' + (state.count + 1)}
+                })
+            }, 1000)
+        }
+
+        render() {
+            return (
+                <div>
+                    <p>这是子元素的props.title：{this.props.title}</p>
+                    <p>这是子元素的state.title：{this.state.title}</p>
+                    <div>-----计时：{this.state.count}-----</div>
+                </div>
+            )
+        }
+    }
+
+    ReactDOM.render(
+        <App/>,
+        document.querySelector('#app')
+    )
+</script>
+</html>

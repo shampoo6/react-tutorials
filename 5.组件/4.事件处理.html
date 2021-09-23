@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- react 需要引入 react 核心库 和 react-dom 库 -->
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+
+    <!-- 为了更方便书写 react 通常会使用 jsx 语法，为了支持该语法 需要引入 babel -->
+    <script src="../js/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script type="text/babel">
+
+    function MyButton(props) {
+
+        // function btnClick(e) {
+        //     console.log('btn clicked');
+        //     console.log(e);
+        //     console.log(this)
+        // }
+
+        const btnClick = (e) => {
+            console.log('btn clicked');
+            console.log(e);
+            console.log(this)
+        }
+
+        // 事件名称需要使用小驼峰式而不是全小写
+        return (
+            <div>
+                <button onClick={btnClick}>click me</button>
+            </div>
+        )
+    }
+
+    class MyButton2 extends React.Component {
+        constructor(props) {
+            super(props)
+            // 为了在函数中获取组件对象 需要调用bind 绑定自己
+            this.btnClick = this.btnClick.bind(this)
+        }
+
+        render() {
+            // 绑定不传参数的事件
+            // return <button onClick={this.btnClick}>click me2</button>
+            // 向事件处理程序传递参数
+            // return <button onClick={(e)=>{this.btnClick(e, 1)}}>click me2</button>
+            return <button onClick={this.btnClick.bind(this, 1)}>click me2</button>
+        }
+
+        btnClick(e, num) {
+            console.log('btn clicked 2');
+            console.log(e);
+            console.log(num);
+            console.log(this);
+        }
+    }
+
+    // 声明渲染函数
+    ReactDOM.render(
+        (
+            <div>
+                <div>
+                    <MyButton />
+                </div>
+                <div>
+                    <MyButton2 />
+                </div>
+            </div>
+        ),
+        document.querySelector('#root')
+    )
+</script>
+
+</html>

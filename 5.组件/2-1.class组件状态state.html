@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- react 需要引入 react 核心库 和 react-dom 库 -->
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+
+    <!-- 为了更方便书写 react 通常会使用 jsx 语法，为了支持该语法 需要引入 babel -->
+    <script src="../js/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+<script type="text/babel">
+    // 文档：https://zh-hans.reactjs.org/docs/state-and-lifecycle.html
+
+    // 在计算开发领域 怎么理解状态(state)这个英文？
+    // 假设我们制作一个时钟，时钟每秒钟的时间值都不一样
+    // 那么我们将描述某个 “时刻” 的时钟的 “数据” 称为该时钟在那个 “时刻” 的 “状态” (state)
+    // 所以 state 一词，通常指某个时刻用于描述某个对象的数据模型
+    // 因此 有时会听到上一个状态 下一个状态的说法 这指的就是不同时刻 描述同一个对象的数据模型
+
+    // 1. 若想要设置一个不停更新时间的时钟组件
+    // 那么需要进行计时并更新组件，如下：
+
+    // 声明组件
+    // class Clock extends React.Component {
+    //     render() {
+    //         return (
+    //             <div>{new Date().toLocaleString()}</div>
+    //         )
+    //     }
+    // }
+
+    // // 声明渲染函数
+    // function render() {
+    //     ReactDOM.render(
+    //         <Clock />,
+    //         document.querySelector('#root')
+    //     )
+    // }
+
+    // // 计时渲染
+    // setInterval(() => {
+    //     render()
+    // }, 1000)
+
+
+    // 2. 通常我们更希望组件能够自己更新自己的状态，而不是每秒 ReactDOM.render 重新渲染
+    // 所以我们使用组件自身状态属性，当自身状态发生变化时，组件会更新自己
+
+    class Clock extends React.Component {
+        constructor(props) {
+            super(props)
+            // 声明组件状态
+            this.state = {
+                date: new Date()
+            }
+
+            setInterval(() => {
+                // 设置状态
+                this.setState({
+                    date: new Date()
+                })
+            }, 1000)
+        }
+
+        render() {
+            return (
+                <div>{this.state.date.toLocaleString()}</div>
+            )
+        }
+    }
+
+    // 3. 以下几种state的使用 需要注意
+    class Counter extends React.Component {
+        constructor(props) {
+            super(props)
+            // 声明组件状态
+            this.state = {
+                count: 0,
+                step: 1
+            }
+
+            // 3-1 给state赋值不应直接赋值，而要使用setState函数
+            // this.state.count = 1 // 错误
+            // this.setState({ count: 1 }) // 正确
+
+            setInterval(() => {
+                // 3-2 设置状态时，新值不要直接依赖 state 原来的值或 props 中的值
+                // 原因是 setState 是异步的 当你以为 count 值为 0 时；count 可能已经被其他线程异步修改成了其他值
+                // this.setState({
+                //     count: this.state.count + this.props.step // 错误
+                // })
+
+                // 要依赖 state 中的数据 或 props 中的数据 以下是正确的写法
+                this.setState((state, props) => {
+                    return { count: state.count + props.step }
+                })
+            }, 1000)
+
+            // 3-3 当调用 setState 设置状态时 react 会同时设置当前的 this.state 对象
+        }
+
+        render() {
+            return (
+                <div>{this.state.count}</div>
+            )
+        }
+    }
+
+
+    let step = 1
+
+    // 声明渲染函数
+    ReactDOM.render(
+        (
+            <div>
+                <Clock />
+                <Counter step={step} />
+            </div>
+        ),
+        document.querySelector('#root')
+    )
+</script>
+
+</html>

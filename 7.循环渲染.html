@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+
+    <style>
+        .item {
+            height: 100px;
+            border-bottom: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+<div id="root"></div>
+</body>
+
+<script type="text/babel">
+    function Students(props) {
+        return (
+            <div>
+                {/*
+                    只要能够在花括号`{}`中插入 react-dom 数组就可以实现循环渲染
+                    这里使用数组的map函数，每个成员返回一个 react-dom
+                 */}
+                {props.list.map(stu => {
+                    return (
+                        <div className="item" key={stu.name}>
+                            {/* 应该给循环元素上绑定key属性，key是数据的唯一标识符 */}
+                            姓名：{stu.name}；性别：{stu.sex}；年龄：{stu.age}岁
+                        </div>
+                    )
+                })}
+            </div>
+        )
+    }
+
+    const data = [
+        {
+            name: '张三',
+            sex: '男',
+            age: 15
+        }, {
+            name: '李四',
+            sex: '女',
+            age: 24
+        }, {
+            name: '老王',
+            sex: '男',
+            age: 30
+        }
+    ]
+
+    // 声明渲染函数
+    ReactDOM.render(
+        <Students list={data}/>,
+        document.querySelector('#root')
+    )
+</script>
+
+</html>

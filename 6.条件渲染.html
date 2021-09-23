@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+
+    <style>
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #f00;
+        }
+    </style>
+</head>
+
+<body>
+<div id="root"></div>
+</body>
+
+<script type="text/babel">
+    function Light() {
+        const [show, setShow] = React.useState(true)
+
+        function toggle() {
+            setShow(!show)
+        }
+
+        return (
+            <div>
+                <div>
+                    <button onClick={toggle}>{show ? '隐藏' : '显示'}</button>
+                </div>
+                {/*利用短路运算 当show为true时 显示后面的 react-dom 元素*/}
+                {/*show && <div className="box"></div>*/}
+                {/*也可以使用三元运算选择性显示内容*/}
+                {/*show?
+                    <div className="box"></div>:
+                    <div>你看不到我</div>*/
+                }
+                {/*任意需要返回组件的地方只要返回null就不会渲染任何东西*/}
+                {show ? <div className="box"></div> : null}
+            </div>
+        )
+    }
+
+    // 声明渲染函数
+    ReactDOM.render(
+        <Light/>,
+        document.querySelector('#root')
+    )
+</script>
+
+</html>
