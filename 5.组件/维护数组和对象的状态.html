@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="../js/babel.js"></script>
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+    // 函数组件维护对象状态时需要注意对象的引用传递特性
+    function App() {
+        const [list, setList] = React.useState([
+            {name: 'zhangsan', sex: 'male'},
+            {name: 'lisi', sex: 'female'}
+        ])
+
+        const [obj, setObj] = React.useState({
+            a: 1,
+            b: true
+        })
+
+        return (
+            <div>
+                <div>
+                    {list.map((item, index) => {
+                        return <div key={index}>姓名：{item.name}；性别：{item.sex}</div>
+                    })}
+                </div>
+                <div>
+                    <div>{obj.a}</div>
+                    <div>{String(obj.b)}</div>
+                </div>
+                <div>
+                    <button onClick={modifyList}>修改数组</button>
+                </div>
+                <div>
+                    <button onClick={modifyObj}>修改对象</button>
+                </div>
+            </div>
+        )
+
+        function modifyList() {
+            setList(list.splice(0, 1))
+        }
+
+        function modifyObj() {
+            obj.a = 2
+            obj.b = false
+            setObj({...obj})
+        }
+    }
+
+    ReactDOM.render(
+        <App/>,
+        document.querySelector('#app')
+    )
+</script>
+</html>

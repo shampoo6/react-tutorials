@@ -104,6 +104,12 @@
                 this.setState((state, props) => {
                     return { count: state.count + props.step }
                 })
+
+
+                // 举例来说，连续设置count自增，若不使用函数形式赋值则会出现异步setState的异常现象
+                // this.setState({count: this.state.count + 1})
+                // this.setState({count: this.state.count + 1})
+                // this.setState({count: this.state.count + 1})
             }, 1000)
 
             // 3-3 当调用 setState 设置状态时 react 会同时设置当前的 this.state 对象

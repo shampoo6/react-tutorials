@@ -43,6 +43,8 @@
     // componentWillUnmount()
 
     // 4. 异常捕获
+    // 渲染过程中出现的异常会被捕获
+    // 运行时的其他异常不会被捕获
     // static getDerivedStateFromError()
     // componentDidCatch()
 
@@ -93,7 +95,7 @@
         ),
         document.querySelector('#root')
     )
-    
+
     // 卸载组件
     // domContainerNode 参数是个dom对象，react-dom的父节点 例如此处的 #root
     // ReactDOM.unmountComponentAtNode(domContainerNode)
