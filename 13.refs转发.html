@@ -151,6 +151,22 @@
         }
     }
 
+    // 若要给函数组件添加ref，那么请使用 React.forwardRef 给函数组件加一个外壳
+    // React.forwardRef 的参数就是一个函数组件，不过该组件接收 ref 对象
+    // React.forwardRef 的返回值是一个被加了壳的函数组件，该组件就是个class组件
+    // 如此处的 MyForwardComponent
+    const MyForwardComponent = React.forwardRef((props, ref) => {
+        const [value, setValue] = React.useState('')
+        return (
+            <div ref={ref}> {/* 将传入的ref对象赋值给 div 的 ref 属性 */}
+                <h3>{value}</h3>
+                MyForwardComponent:<input value={value} onChange={ev => {
+                    setValue(ev.target.value)
+                }}/>
+            </div>
+        )
+    })
+
     ReactDOM.render(
         <App/>,
         document.querySelector('#app')

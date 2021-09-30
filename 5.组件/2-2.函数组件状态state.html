@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div id="root"></div>
+<div id="root"></div>
 </body>
 
 <script type="text/babel">
@@ -29,6 +29,8 @@
         // 第二个数组成员是符值器 setter 用来赋值
         const [date, setDate] = React.useState(new Date())
 
+        const [count, setCount] = React.useState(0)
+
         setInterval(() => {
             setDate(new Date())
         }, 1000)
@@ -36,15 +38,25 @@
         return (
             <div>
                 {date.toLocaleString()}
+                <div>{count}</div>
+                <div>
+                    <button onClick={onIncreaseCount}>计数</button>
+                </div>
             </div>
         )
+
+        function onIncreaseCount() {
+            // 函数组件的 setter 函数也是一个异步函数
+            // 所以若赋值状态依赖了自身的状态，请将参数变为回调函数如：
+            setCount(_count => _count + 1)
+        }
     }
 
     // 声明渲染函数
     ReactDOM.render(
         (
             <div>
-                <Clock />
+                <Clock/>
             </div>
         ),
         document.querySelector('#root')

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+    // Profiler 探测器
+    // 探测器是一个用于优化页面检测页面运行效率的工具，在生产环境下禁用，因为他会带来额外的开销
+
+    function MyDate() {
+        const [date, setDate] = React.useState(new Date())
+
+        React.useEffect(() => {
+            setInterval(() => {
+                setDate(new Date())
+            }, 1000)
+            return () => {
+            }
+        }, [])
+
+        return (
+            <React.Fragment>
+                {date.toLocaleString()}
+            </React.Fragment>
+        )
+    }
+
+    function App() {
+        return (
+            <div>
+                <MyDate/>
+            </div>
+        )
+    }
+
+    ReactDOM.render(
+        (
+            <React.Profiler id="App" onRender={appCallback}>
+                <App/>
+            </React.Profiler>
+        ),
+        document.querySelector('#app')
+    )
+
+    function appCallback(
+        id, // the "id" prop of the Profiler tree that has just committed
+        phase, // either "mount" (if the tree just mounted) or "update" (if it re-rendered)
+        actualDuration, // time spent rendering the committed update
+        baseDuration, // estimated time to render the entire subtree without memoization
+        startTime, // when React began rendering this update
+        commitTime, // when React committed this update
+        interactions // the Set of interactions belonging to this update
+    ) {
+        console.log(id)
+        console.log(phase)
+        console.log(actualDuration)
+        console.log(baseDuration)
+        console.log(startTime)
+        console.log(commitTime)
+        console.log(interactions)
+    }
+</script>
+</html>

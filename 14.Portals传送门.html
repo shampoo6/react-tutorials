@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/babel.min.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+</head>
+
+<body>
+<div id="portal"></div>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+    // 传送门
+    // 传送门顾名思义是一个将组件内容传送到其他节点，而非自身组件所在位置的门
+    // 应用场景：制作模态等脱离自身组件结构的内容
+
+    // 注意：传送门的使用必须配合无状态的函数组件，class组件是无法使用的
+    function Portal({show, rootNode, onClose}) {
+        // ReactDOM.createPortal 函数将返回一个可以被渲染到页面的一组html元素
+        // 第一个参数：要传送的 react-dom
+        // 第二个参数：传送门的目标节点，最后元素将渲染到该节点
+        return show ? ReactDOM.createPortal(
+            (
+                <React.Fragment>
+                    <h1>this is a message from a portal</h1>
+                    <button onClick={() => {
+                        onClose()
+                    }}>关闭传送门
+                    </button>
+                </React.Fragment>
+            ),
+            rootNode
+        ) : null
+    }
+
+    function App() {
+        const [show, setShow] = React.useState(false)
+        const [rootNode, setRootNode] = React.useState(null)
+
+        return (
+            <React.Fragment>
+                <div ref={el => setRootNode(el)}/>
+                <button onClick={() => {
+                    setShow(true)
+                }}>创建传送门
+                </button>
+                <Portal rootNode={rootNode} show={show} onClose={() => {
+                    setShow(false)
+                }}/>
+            </React.Fragment>
+        )
+    }
+
+    ReactDOM.render(
+        <App/>,
+        document.querySelector('#app')
+    )
+</script>
+
+</html>

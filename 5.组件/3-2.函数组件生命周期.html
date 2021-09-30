@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div id="root"></div>
+<div id="root"></div>
 </body>
 
 <script type="text/babel">
@@ -23,6 +23,7 @@
     // 参考：https://tsh.io/blog/react-component-lifecycle-methods-vs-hooks/
 
     let timer
+
     function Clock() {
         const [date, setDate] = React.useState(new Date())
 
@@ -40,11 +41,10 @@
                 return () => {
                     console.log('componentWillUnmount')
                     clearInterval(timer)
-                };
+                }
             },
             []
-        );
-
+        )
 
 
         // 第二个参数：
@@ -64,9 +64,15 @@
 
                 return () => {
                     console.log('before next update')
-                };
+                }
             }
-        );
+        )
+
+        // 可以利用 useEffect 的特性创建指定属性的监视器
+        React.useEffect(() => {
+            // 此处获取变化后的状态值
+            console.log(date)
+        }, [date]) // 可以监视 date 状态的变化
 
         return (
             <div>
@@ -79,7 +85,7 @@
     ReactDOM.render(
         (
             <div>
-                <Clock />
+                <Clock/>
             </div>
         ),
         document.querySelector('#root')
