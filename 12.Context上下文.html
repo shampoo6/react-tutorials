@@ -10,7 +10,9 @@
     <script src="js/react-dom.development.js"></script>
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+
+</div>
 </body>
 <script type="text/babel">
 
@@ -28,62 +30,75 @@
     // 语法：const MyContext = React.createContext(defaultValue);
     // defaultValue 若组件找不到对应 context 时会获取默认值
     // context 的值可以是一个对象
-    const StringContext = React.createContext('this is defaultValue')
+    const MyContext = React.createContext({theme: 'dark'})
 
-    class App extends React.Component {
+
+    // class 组件读取context方法如下
+    // 1. 创建组件
+    class ClassComponent extends React.Component {
         render() {
             return (
-                <div>
-                    hello world
+                <div style={{
+                    color: this.context.theme === 'light' ? '#000' : '#fff',
+                    backgroundColor: this.context.theme === 'light' ? '#FFF289FF' : '#000'
+                }}>
+                    {/* 使用 this.context 读取上下文 */}
+                    context的内容是: {JSON.stringify(this.context)}
                 </div>
             )
         }
     }
 
-    class Component1 extends React.Component {
-
-        componentDidMount() {
-            console.log(this.context)
-        }
-
-        render() {
-            return <div>Component1</div>
-        }
-    }
-
+    // 2. 给组件注册上下文
     // 注册 context 这样的话在组件挂载后就可以通过 this.context 访问
-    Component1.contextType = StringContext
+    ClassComponent.contextType = MyContext
 
 
     // 函数组件获取 context 需要使用 ReactContext.Consumer
-    function FnComponent(props) {
+    // 函数组件接收 context 的方法是通过 props 传递参数
+    function FunctionComponent(props) {
         return (
-            <div>
-                <p>这是函数组件</p>
-                <div>{props.value}</div>
-            </div>
+            <div style={{
+                color: props.theme === 'light' ? '#6b008d' : '#9dff9b',
+                backgroundColor: props.theme === 'light' ? '#ffb1b1' : '#00064b'
+            }}>这是函数组件</div>
         )
     }
 
 
-    ReactDOM.render(
-        (
-            <div>
-                {/* 此处的组件不再context中 所以获取this.context时，将获取到defaultValue */}
-                <Component1/>
-                <StringContext.Provider value={'ok'}>
-                    <Component1/>
-                    <StringContext.Consumer>
+    function App() {
+        const [context, setContext] = React.useState({theme: 'light'})
+
+        return (
+            <React.Fragment>
+                <button onClick={() => {
+                    context.theme === 'light' ? setContext({theme: 'dark'}) : setContext({theme: 'light'})
+                }}>切换主题
+                </button>
+                <ClassComponent/>
+                <MyContext.Provider value={context}>
+                    {/*
+                        3. 上下文通过 Provider 提供 value 值
+                        4. 将组件填充到 Provider 中
+                    */}
+                    {/* context 通过 Provider 提供参数，同时此处可以通过 value 设置上下文参数 */}
+                    <ClassComponent/>
+                    {/* 函数组件要使用context的value，需要在 Provider 里面写一个消费者 Consumer */}
+                    <MyContext.Consumer>
                         {/*
-                            在StringContext.Consumer内部可以创建一个接收value参数的函数
+                            在MyContext.Consumer内部可以创建一个接收value参数的函数
                             该函数参数value就是Provider中设置的value值
                             可以利用这个方法给函数组件设置context
                         */}
-                        {value => <FnComponent value={value}/>}
-                    </StringContext.Consumer>
-                </StringContext.Provider>
-            </div>
-        ),
+                        {(value) => <FunctionComponent theme={value.theme}/>}
+                    </MyContext.Consumer>
+                </MyContext.Provider>
+            </React.Fragment>
+        )
+    }
+
+    ReactDOM.render(
+        <App/>,
         document.querySelector('#app')
     )
 

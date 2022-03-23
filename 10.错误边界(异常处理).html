@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,13 +10,14 @@
     <script src="js/react.development.js"></script>
     <script src="js/react-dom.development.js"></script>
 </head>
+
 <body>
-<div id="app"></div>
+    <div id="app"></div>
 </body>
 
 <script type="text/babel">
     // react 的错误边界类似 js 的 catch
-    // 错误边界是一个 react 组件，其内部的子组件一旦发生异常就会触发错误边界
+    // 错误边界是一个 react 组件，其内部的子组件渲染时一旦发生异常就会触发错误边界
     // 错误边界仅使用 class 组件创建
 
     class ErrorBoundary extends React.Component {
@@ -29,7 +31,7 @@
         static getDerivedStateFromError(error) {
             console.warn('getDerivedStateFromError')
             // 此处 更新 state 使下一次渲染能够显示降级后的 UI
-            return {hasError: true}
+            return { hasError: true }
         }
 
         componentDidCatch(error, errorInfo) {
@@ -60,11 +62,20 @@
         // 使用错误边界包裹子组件
         (
             <ErrorBoundary>
-                <Child/>
+                <Child />
             </ErrorBoundary>
         )
         ,
         document.querySelector('#app')
     )
+
+    // 总结：
+    // 1. 错误边界需要是一个 class 组件
+    // 2. 错误边界需要生命一个 hasError 状态
+    // 3. 错误边界需要实现生命周期钩子函数： static getDerivedStateFromError(error) 该函数返回要修改的状态，通常是{hasError: true} ； componentDidCatch(error, errorInfo) [该函数非必要]
+    // 4. 错误边界的渲染函数的内容，根据 hasError 状态进行调整
+    // 5. 使用错误边界的时候，在错误边界的标签体中嵌入其他子组件
+    // 6. 子组件出现任何渲染时的异常，都会被错误边界捕获到，从而显示错误的提示
 </script>
+
 </html>

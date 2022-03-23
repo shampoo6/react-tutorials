@@ -14,6 +14,8 @@
 </body>
 <script type="text/babel">
     // 函数组件维护对象状态时需要注意对象的引用传递特性
+    // 状态值本身是数组或对象时，那么为了触发页面的状态更新，在调用set函数时需要传入新的数组或对象
+    // 和函数组件相反，class 组件修改状态值就不会有类似问题
     function App() {
         const [list, setList] = React.useState([
             {name: 'zhangsan', sex: 'male'},

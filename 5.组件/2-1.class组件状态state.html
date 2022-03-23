@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<div id="root"></div>
+    <div id="root"></div>
 </body>
 
 <script type="text/babel">
@@ -80,6 +80,9 @@
     }
 
     // 3. 以下几种state的使用 需要注意
+    // 3-1 给state赋值不应直接赋值，而要使用setState函数
+    // this.state.count = 1 // 错误
+    // this.setState({ count: 1 }) // 正确
     class Counter extends React.Component {
         constructor(props) {
             super(props)
@@ -88,47 +91,45 @@
                 count: 0,
                 step: 1
             }
-
-            // 3-1 给state赋值不应直接赋值，而要使用setState函数
-            // this.state.count = 1 // 错误
-            // this.setState({ count: 1 }) // 正确
-
-            setInterval(() => {
-                // 3-2 设置状态时，新值不要直接依赖 state 原来的值或 props 中的值
-                // 原因是 setState 是异步的 当你以为 count 值为 0 时；count 可能已经被其他线程异步修改成了其他值
-                // this.setState({
-                //     count: this.state.count + this.props.step // 错误
-                // })
-
-                // 要依赖 state 中的数据 或 props 中的数据 以下是正确的写法
-                // this.setState((state, props) => {
-                //     return { count: state.count + props.step }
-                // })
-
-
-                // 举例来说，连续设置count自增，若不使用函数形式赋值则会出现异步setState的异常现象
-                // this.setState({count: this.state.count + 1})
-                // this.setState({count: this.state.count + 1})
-                // this.setState({count: this.state.count + 1})
-
-
-                // 3-3 setState 函数是异步的，所以存在第二个参数，作为回调函数，将在state状态修改完成后被调用
-                this.setState((state, props) => {
-                    return {count: state.count + props.step}
-                }, () => {
-                    console.log('state 状态设置完成')
-                    // 此处可以获取状态设置完成后的新的状态state的值
-                })
-            }, 1000)
-
-
-            // 3-4 当调用 setState 设置状态时 react 会同时设置当前的 this.state 对象
         }
 
         render() {
             return (
-                <div>{this.state.count}</div>
+                <div>
+                    <div>{this.state.count}</div>
+                    <div><button onClick={this.increaseCount.bind(this)}>自增</button></div>
+                </div>
             )
+        }
+
+        increaseCount() {
+            // 3-2 设置状态时，新值不要直接依赖 state 原来的值或 props 中的值
+            // 原因是 setState 是异步的 当你以为 count 值为 0 时；count 可能已经被其他线程异步修改成了其他值
+            // this.setState({
+            //     count: this.state.count + this.props.step // 错误
+            // })
+
+            // 要依赖 state 中的数据 或 props 中的数据 以下是正确的写法
+            // this.setState((state, props) => {
+            //     return { count: state.count + props.step }
+            // })
+
+
+            // 举例来说，连续设置count自增，若不使用函数形式赋值则会出现异步setState的异常现象
+            // this.setState({count: this.state.count + 1})
+            // this.setState({count: this.state.count + 1})
+            // this.setState({count: this.state.count + 1})
+
+
+            // 3-3 setState 函数是异步的，所以存在第二个参数，作为回调函数，将在state状态修改完成后被调用
+            this.setState((state, props) => {
+                return { count: state.count + props.step }
+            }, () => {
+                console.log('state 状态设置完成')
+                // 此处可以获取状态设置完成后的新的状态state的值
+            })
+
+            // 3-4 当调用 setState 设置状态时 react 会同时设置当前的 this.state 对象
         }
     }
 
@@ -139,8 +140,8 @@
     ReactDOM.render(
         (
             <div>
-                <Clock/>
-                <Counter step={step}/>
+                <Clock />
+                <Counter step={step} />
             </div>
         ),
         document.querySelector('#root')

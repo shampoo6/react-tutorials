@@ -32,11 +32,11 @@
     // componentDidMount()
 
     // 2. 更新：当组件的 props 或 state 发生变化时会触发更新。组件更新的生命周期调用顺序如下：
-    // static getDerivedStateFromProps()
-    // shouldComponentUpdate()
+    // static getDerivedStateFromProps(props, state)=>{[key: string]: any} 每次调用渲染函数render前调用，返回值是希望改变的状态对象
+    // shouldComponentUpdate(props, state)=>boolean 判断是否应该更新，返回一个布尔值
     // render()
-    // getSnapshotBeforeUpdate()
-    // componentDidUpdate()
+    // getSnapshotBeforeUpdate(prevProps, prevState)=>{[key: string]: any} 每次更新前调用，返回值将被传递给 componentDidUpdate 充当第三个参数
+    // componentDidUpdate(prevProps, prevState, snapshot)
 
     // 3. 卸载
     // 当组件从 DOM 中移除时会调用如下方法：
@@ -45,6 +45,7 @@
     // 4. 异常捕获
     // 渲染过程中出现的异常会被捕获
     // 运行时的其他异常不会被捕获
+    // 此处留到错误边界，异常处理的地方我们再做详细讲解
     // static getDerivedStateFromError()
     // componentDidCatch()
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script src="../js/babel.js"></script>
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+    // 有时候会有这样的需求
+    // 希望在绑定的事件函数中使用 this 来访问组件自身
+
+    class App extends React.Component {
+
+        constructor() {
+            super()
+            this.flag = true // 给组件对象设置变量
+
+            // 在构造函数中调用bind修改函数的this指代
+            // 相当于手动绑定this参数值
+            this.ClickHandler = this.ClickHandler.bind(this)
+        }
+
+        render() {
+            return (
+                <div>
+
+                    {/*<button onClick={this.ClickHandler}>修改flag的值</button>*/}
+                    {/* 使用bind，利用其返回的新函数绑定事件 */}
+                    {/*<button onClick={this.ClickHandler.bind(this)}>修改flag的值</button>*/}
+                    {/* 利用lamda表达式 */}
+                    {/*<button onClick={() => {
+                        this.ClickHandler()
+                    }}>*/}
+                    <button onClick={this.ClickHandler}>修改flag的值</button>
+                </div>
+            )
+        }
+
+        ClickHandler() {
+            // 希望在这里访问 this
+            console.log(this)
+            this.flag = !this.flag
+        }
+    }
+
+    ReactDOM.render(
+        <App/>,
+        document.querySelector('#app')
+    )
+</script>
+</html>

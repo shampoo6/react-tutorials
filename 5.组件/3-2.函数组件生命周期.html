@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<div id="root"></div>
+    <div id="root"></div>
 </body>
 
 <script type="text/babel">
@@ -26,57 +26,50 @@
 
     function Clock() {
         const [date, setDate] = React.useState(new Date())
+        const [count, setCount] = React.useState(0)
 
         // 第一个参数：钩子函数，将在不同时机被触发，具体什么时候触发，要看第二个参数传入的什么
         // 第二个参数：
-        // 若传入空数组，那么够子函数就相当于 componentDidMount
-        // 够子函数的返回值就相当于 componentWillUnmount
-        React.useEffect(
-            () => {
-                console.log('componentDidMount')
-                timer = setInterval(() => {
-                    setDate(new Date())
-                }, 1000)
+        // 若传入空数组，那么钩子函数就相当于 componentDidMount
+        // 钩子函数的返回值就相当于 componentWillUnmount
+        // React.useEffect(() => {
+        //     console.log('此处写的任何内容相当于class组件componentDidMount中写的内容')
 
-                return () => {
-                    console.log('componentWillUnmount')
-                    clearInterval(timer)
-                }
-            },
-            []
-        )
-
+        //     return () => {
+        //         console.log('useEffect 的返回的回调函数，相当于class组件的componentWillUnmount')
+        //     }
+        // }, [])
 
         // 第二个参数：
-        // 若不传参数，或传入一个可变依赖，那么当参数发生变化时，就会触发第一个参数中的回调
+        // 若传入一个可变依赖，那么当参数发生变化时，就会触发第一个参数中的回调
         // 第一个参数中回调函数的返回值 将在下次调用前被调用
 
-        // timer = setInterval(() => {
-        //     setDate(new Date())
-        // }, 1000)
 
-        React.useEffect(
-            () => {
-                console.log('componentDidUpdate')
-                // timer = setInterval(() => {
-                //     setDate(new Date())
-                // }, 1000)
+        // React.useEffect(() => {
+        //     console.log('更新页面后的回调，相当于class组件的 componentDidUpdate')
+        //     return () => {
+        //         console.log('下一次更新前执行的回调，相当于class组件的 getDerivedStateFromProps')
+        //     }
+        // }, [date])
 
-                return () => {
-                    console.log('before next update')
-                }
-            }
-        )
 
         // 可以利用 useEffect 的特性创建指定属性的监视器
-        React.useEffect(() => {
-            // 此处获取变化后的状态值
-            console.log(date)
-        }, [date]) // 可以监视 date 状态的变化
+        React.useEffect(()=>{
+            console.log('count 更新完成')
+            console.log(count) // 更新前 count 的值
+            return ()=>{
+                console.log('count 更新前')
+                console.log(count) // 更新后 count 的值
+            }
+        }, [count])
+
 
         return (
             <div>
-                {date.toLocaleString()}
+                {date.toLocaleString()}<br />
+                {count}<br />
+                <button onClick={() => { setDate(new Date()) }}>更新时间</button>
+                <button onClick={() => { setCount(_count => _count + 1) }}>更新Count</button>
             </div>
         )
     }
@@ -85,7 +78,7 @@
     ReactDOM.render(
         (
             <div>
-                <Clock/>
+                <Clock />
             </div>
         ),
         document.querySelector('#root')
