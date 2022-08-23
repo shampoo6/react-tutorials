@@ -71,7 +71,7 @@
 
     // 总结：
     // 1. 错误边界需要是一个 class 组件
-    // 2. 错误边界需要生命一个 hasError 状态
+    // 2. 错误边界需要声明一个 hasError 状态
     // 3. 错误边界需要实现生命周期钩子函数： static getDerivedStateFromError(error) 该函数返回要修改的状态，通常是{hasError: true} ； componentDidCatch(error, errorInfo) [该函数非必要]
     // 4. 错误边界的渲染函数的内容，根据 hasError 状态进行调整
     // 5. 使用错误边界的时候，在错误边界的标签体中嵌入其他子组件

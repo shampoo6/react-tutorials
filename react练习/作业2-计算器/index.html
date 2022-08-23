@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/babel.min.js"></script>
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+</head>
+<body>
+<div class="app"></div>
+</body>
+<script type="text/babel">
+
+    function Computer() {
+        // 声明状态
+        const [num1, setNum1] = React.useState(null)
+        const [num2, setNum2] = React.useState(null)
+        const [opt, setOpt] = React.useState(null)
+        const [result, setResult] = React.useState(null)
+
+        const reset = () => {
+            setNum1(null)
+            setNum2(null)
+            setOpt(null)
+            setResult(null)
+        }
+
+        const btnClick = ev => {
+            let text = ev.target.innerText
+            console.log(text)
+
+            // 若result已经存在值了，那么只允许用户点击c键
+            if (result !== null && text !== 'c') return
+
+            // 判断点击的是数字还是操作符
+            if (!isNaN(Number(text))) {
+                // 点击的数字
+
+                // 1. num1 不存在 给 num1 赋值
+                if (num1 === null) {
+                    setNum1(Number(text))
+                }
+
+                // 2. 判断是否点击过 + - * /(只要判断是否opt存在值就可以了) 运算符，有的话就记录到 num2，没有的话就覆盖 num1
+                if (opt === null) {
+                    setNum1(Number(text))
+                } else {
+                    setNum2(Number(text))
+                }
+            } else {
+                // 点击的运算符
+
+                // 1. 点击c键，执行重置操作
+                if (text === 'c') {
+                    reset()
+                }
+
+                // 2. 点击=键，判断是否满足所有的运算条件，满足的话就运算结果，否则啥也不做
+                else if (text === '=') {
+                    // 判断所有的数字和操作符均已赋值
+                    if (num1 !== null && num2 !== null && opt) {
+                        // 运算
+                        const result = eval(`${num1}${opt}${num2}`)
+                        console.log(result)
+                        setResult(result)
+                    }
+                } else {
+                    // 3. 点击 + - * /
+                    // 3-1. 判断若第二个数字已存在，也不做任何事
+                    // 3-2. 判断第一个数字是否存在，若存在就记录运算符，否则就啥也不做
+
+                    if (num1 !== null && num2 !== null) return
+                    if (num1 === null) return
+                    setOpt(text)
+                }
+            }
+        }
+
+        return (
+            <div className="card" style={{width: '300px'}}>
+                {/*显示屏*/}
+                <div className="p-3">
+                    <input readOnly={true} type="text" className="w-100"
+                           value={'' + (num1 === null ? '' : num1) + (opt === null ? '' : opt) + (num2 === null ? '' : num2) + (result === null ? '' : `=${result}`)}/>
+                </div>
+                <div className="row row-cols-4 px-3 pb-3 gy-3">
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">1</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">2</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">3</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">+</button>
+                    </div>
+
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">4</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">5</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">6</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">-</button>
+                    </div>
+
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">7</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">8</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">9</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">*</button>
+                    </div>
+
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">c</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">0</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">=</button>
+                    </div>
+                    <div className="col">
+                        <button onClick={btnClick} className="btn btn-outline-dark w-100">/</button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+
+    ReactDOM.render(
+        (
+            <Computer></Computer>
+        ),
+        document.querySelector('.app')
+    )
+</script>
+</html>

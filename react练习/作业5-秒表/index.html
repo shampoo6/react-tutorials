@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <script src="../js/babel.js"></script>
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+
+    function Clock() {
+        // timer 用来充当计时器id，若id存在则认为已经开始计时了
+        const [timer, setTimer] = React.useState(null)
+        // 用时间数字代表上一帧的时间戳
+        const [lastTime, setLastTime] = React.useState(null)
+        const [now, setNow] = React.useState(null)
+        // timeList 保存时间对象列表
+        const [timeList, setTimeList] = React.useState([])
+
+        // time 是一个 Date 对象
+        function formatDate(time) {
+            // 做非空判断
+            if (!time) return '00:00:00.000'
+            let hour = time.getHours() - 8
+            let minute = time.getMinutes()
+            let second = time.getSeconds()
+            let mill = time.getMilliseconds()
+            // 小时值由于时区问题，需要减去8小时
+            return `${hour < 10 ? '0' + hour : hour}:${minute < 10 ? '0' + minute : minute}:${second < 10 ? '0' + second : second}.${
+                mill < 10 ? '00' + mill :
+                    mill < 100 ? '0' + mill : mill
+            }`
+        }
+
+        function updateTimerString() {
+            // 构造时间对象
+            let time
+            if (lastTime === null && now === null) time = null
+            else {
+                time = new Date(now - lastTime)
+            }
+            return formatDate(time)
+        }
+
+        function start() {
+            // 先记录 lastTime
+            setLastTime(Date.now())
+
+            // 开启计时器并频繁计时
+            let _timer = setInterval(() => {
+                // 赋值 now
+                setNow(Date.now())
+            }, 17)
+
+            // 设置计时器
+            setTimer(_timer)
+        }
+
+        function record() {
+            // 获取now
+            // 计算时间差
+            let time = new Date(now - lastTime)
+            // 记录到列表
+            timeList.push(time)
+            setTimeList([...timeList])
+        }
+
+        function reset() {
+            // 恢复所有状态到初始值
+            clearInterval(timer)
+            setTimer(null)
+            setLastTime(null)
+            setNow(null)
+            setTimeList([])
+        }
+
+        return (
+            <div className="border p-3 d-inline-block">
+                <div>
+                    {!timer && <button className="btn btn-primary" onClick={start}>开始计时</button>}
+                    {timer && (
+                        <React.Fragment>
+                            <button className="btn btn-primary" onClick={record}>打表</button>
+                            <button className="btn btn-outline-dark" onClick={reset}>重置</button>
+                        </React.Fragment>
+                    )}
+                </div>
+                {/*时间计时区域*/}
+                <div>
+                    {updateTimerString()}
+                </div>
+                {/*计时列表*/}
+                <div>
+                    {timeList.map((time, i) => (<div key={i}>{formatDate(time)}</div>))}
+                </div>
+            </div>
+        )
+    }
+
+    ReactDOM.render(
+        (
+            <div>
+                <Clock/>
+                <Clock/>
+                <Clock/>
+            </div>
+        ),
+        document.querySelector('#app')
+    )
+</script>
+</html>

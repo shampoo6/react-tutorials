@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/babel.min.js"></script>
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+    let zhangSan = {
+        name: '张三',
+        sex: 'male',
+        age: 17
+    }
+    let liSi = {
+        name: '李四',
+        sex: 'female',
+        age: 20
+    }
+    let laoWang = {
+        name: '老王',
+        sex: 'other',
+        age: 30
+    }
+
+
+    // 函数组件
+    function Student1(props) {
+        let data = props.data
+
+        // 从组件的html属性中读值
+        let {name, sex, age} = data
+
+        return (
+            <div>
+                <div>姓名: {name}</div>
+                <div>性别: {sex === 'male' ?
+                    '男' :
+                    sex === 'female' ?
+                        '女' : '其他'
+                }</div>
+                <div>年龄: {age}</div>
+            </div>
+        )
+    }
+
+    class Student2 extends React.Component {
+        constructor(props) {
+            super(props);
+            let data = props.data
+            let {name, sex, age} = data
+            this.state = {
+                name: name,
+                sex: sex,
+                age: age
+            }
+        }
+
+        render() {
+            return (
+                <div>
+                    <div>姓名: {this.state.name}</div>
+                    <div>性别: {this.state.sex === 'male' ?
+                        '男' :
+                        this.state.sex === 'female' ?
+                            '女' : '其他'
+                    }</div>
+                    <div>年龄: {this.state.age}</div>
+                </div>
+            )
+        }
+    }
+
+    // 渲染函数
+    ReactDOM.render(
+        (
+            <div>
+                {/*<Student1 data={zhangSan}></Student1>
+                <Student1 data={liSi}></Student1>
+                <Student1 data={laoWang}></Student1>*/}
+                <Student2 data={zhangSan}></Student2>
+                <Student2 data={liSi}></Student2>
+                <Student2 data={laoWang}></Student2>
+            </div>
+        ),
+        document.querySelector('#app')
+    )
+
+</script>
+</html>

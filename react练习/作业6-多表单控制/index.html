@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <script src="../js/babel.js"></script>
+    <script src="../js/react.development.js"></script>
+    <script src="../js/react-dom.development.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+
+    class Form extends React.Component {
+        state = {
+            name: '',
+            sex: 'other',
+            age: 0
+        }
+
+        submit(ev) {
+            ev.preventDefault()
+            ev.stopPropagation()
+            console.log(this.state)
+        }
+
+        reset(ev) {
+            ev.preventDefault()
+            ev.stopPropagation()
+            this.setState({
+                name: '',
+                sex: 'other',
+                age: 0
+            })
+        }
+
+        render() {
+            return (
+                <div style={{width: '350px'}} className="card p-3">
+                    <form>
+                        <div className="row">
+                            <label className="col-3 col-form-label">姓名</label>
+                            <div className="col">
+                                <input name="name" type="text" className="form-control" value={this.state.name}
+                                       onInput={ev => {
+                                           this.setState({name: ev.target.value})
+                                       }}/>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <label className="col-3 col-form-label">性别</label>
+                            <div className="col d-flex align-items-center">
+                                <div className="form-check form-check-inline">
+                                    <input onChange={ev => {
+                                        this.setState({sex: ev.target.value})
+                                    }} checked={this.state.sex === 'male'} name="sex" type="radio"
+                                           className="form-check-input" value="male"/>
+                                    <label className="form-check-label">男</label>
+                                </div>
+                                <div className="form-check form-check-inline">
+                                    <input onChange={ev => {
+                                        this.setState({sex: ev.target.value})
+                                    }} checked={this.state.sex === 'female'} name="sex" type="radio"
+                                           className="form-check-input" value="female"/>
+                                    <label className="form-check-label">女</label>
+                                </div>
+                                <div className="form-check form-check-inline">
+                                    <input onChange={ev => {
+                                        this.setState({sex: ev.target.value})
+                                    }} checked={this.state.sex === 'other'} name="sex" type="radio"
+                                           className="form-check-input" value="other"/>
+                                    <label className="form-check-label">其他</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <label className="col-3 col-form-label">年龄</label>
+                            <div className="col">
+                                <input value={this.state.age} name="age" type="number" className="form-control"
+                                       onInput={ev => {
+                                           this.setState({age: ev.target.value})
+                                       }}/>
+                            </div>
+                        </div>
+                        <div className="row g-2">
+                            <div className="col">
+                                <button className="btn btn-primary w-100" onClick={this.submit.bind(this)}>提交</button>
+                            </div>
+                            <div className="col">
+                                <button className="btn btn-warning w-100" onClick={this.reset.bind(this)}>重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            )
+        }
+    }
+
+    function App() {
+        const f1 = React.useRef(null)
+        let f2
+
+        function readData() {
+            // console.log(f1)
+            console.log(f1.current.state)
+            // console.log(f2)
+            console.log(f2.state)
+        }
+
+        function resetAll(ev) {
+            f1.current.reset(ev)
+            f2.reset(ev)
+        }
+
+        return (
+            <div>
+                <Form ref={f1}/>
+                <Form ref={el => {
+                    f2 = el
+                }}/>
+                <div>
+                    <button className="btn btn-primary" onClick={readData}>获取所有表单数据</button>
+                    <button className="btn btn-danger" onClick={resetAll}>重置所有表单</button>
+                </div>
+            </div>
+        )
+    }
+
+    ReactDOM.render(
+        <App/>,
+        document.querySelector('#app')
+    )
+</script>
+</html>

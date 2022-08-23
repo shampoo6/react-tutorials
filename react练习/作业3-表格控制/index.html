@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/babel.js"></script>
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script type="text/babel">
+
+    class App extends React.Component {
+        state = {
+            students: [
+                {
+                    name: '张三',
+                    sex: 'male',
+                    age: 17
+                },
+                {
+                    name: '李四',
+                    sex: 'female',
+                    age: 24
+                },
+                {
+                    name: '老王',
+                    sex: 'other',
+                    age: 30
+                },
+            ],
+            formData: {
+                name: '',
+                sex: 'other',
+                age: 0
+            }
+        }
+
+
+        remove(index) {
+            const result = confirm('确定删除吗?')
+            if (result) {
+                console.log(index)
+                this.state.students.splice(index, 1)
+                this.setState((state, props) => ({students: state.students}))
+            }
+        }
+
+        onSexChange(ev) {
+            this.state.formData.sex = ev.target.value
+            this.setState(state => ({formData: state.formData}))
+        }
+
+        submit(ev) {
+            ev.preventDefault()
+            ev.stopPropagation()
+
+            console.log(this.state.formData)
+            this.state.students.unshift({...this.state.formData})
+            this.setState(state => ({students: state.students}))
+        }
+
+        render() {
+            return (
+                <div>
+                    <table className="table">
+                        <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>年龄</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            this.state.students.map((stu, i) => (
+                                <tr key={i}>
+                                    <td>{stu.name}</td>
+                                    <td>{stu.sex === 'male' ? <b style={{color: 'blue'}}>男</b> :
+                                        stu.sex === 'female' ? <u style={{color: 'red'}}>女</u> :
+                                            <i style={{color: 'yellow'}}>其他</i>
+                                    }
+                                    </td>
+                                    <td>{stu.age}</td>
+                                    <td>
+                                        <button className="btn btn-danger" onClick={this.remove.bind(this, i)}>删除
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                        </tbody>
+                    </table>
+                    <div className="card p-3" style={{width: '400px'}}>
+                        <form>
+                            <div className="row mb-3">
+                                <label className="col-3 form-label">姓名</label>
+                                <div className="col">
+                                    <input value={this.state.formData.name} onInput={ev => {
+                                        this.state.formData.name = ev.target.value
+                                        this.setState(state => ({formData: state.formData}))
+                                    }} name="name" type="text" className="form-control"/>
+                                </div>
+                            </div>
+                            <div className="row mb-3">
+                                <label className="col-3 form-label">性别</label>
+                                <div className="col">
+                                    <div className="form-check-inline">
+                                        <input checked={this.state.formData.sex === 'male'}
+                                               onChange={this.onSexChange.bind(this)} name="sex" type="radio"
+                                               value="male" className="form-check-input"/>
+                                        <label className="form-check-label">男</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input checked={this.state.formData.sex === 'female'}
+                                               onChange={this.onSexChange.bind(this)} name="sex" type="radio"
+                                               value="female" className="form-check-input"/>
+                                        <label className="form-check-label">女</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input checked={this.state.formData.sex === 'other'}
+                                               onChange={this.onSexChange.bind(this)} name="sex" type="radio"
+                                               value="other" className="form-check-input"/>
+                                        <label className="form-check-label">其他</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row mb-3">
+                                <label className="col-3 form-label">年龄</label>
+                                <div className="col">
+                                    <input value={this.state.formData.age} onChange={ev => {
+                                        this.state.formData.age = ev.target.value
+                                        this.setState(state => ({formData: state.formData}))
+                                    }} name="age" type="number" className="form-control"/>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-3">
+                                </div>
+                                <div className="col">
+                                    <button className="btn btn-primary" onClick={this.submit.bind(this)}>提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    // 渲染函数
+    ReactDOM.render(
+        <App></App>,
+        document.querySelector('#app')
+    )
+</script>
+</html>
